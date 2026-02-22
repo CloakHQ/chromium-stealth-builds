@@ -1,0 +1,41 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. v142.0.7444.175)'
+        required: true
+      title:
+        description: 'Release title'
+        required: true
+        default: 'Chromium Stealth Build'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag }}
+          name: "${{ github.event.inputs.title }} — ${{ github.event.inputs.tag }}"
+          body: |
+            ## Stealth Chromium Build
+
+            Pre-built Chromium with 16 source-level fingerprint patches.
+
+            ### Usage
+            ```bash
+            pip install cloakbrowser
+            # Binary auto-downloads on first launch
+            ```
+
+            Or download manually and set `CLOAKBROWSER_BINARY_PATH=/path/to/chrome`.
+
+            ### Platforms
+            - Linux x86_64
